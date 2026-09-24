@@ -1,51 +1,29 @@
-# TOOLBOXLAP — Google Colab + Ollama
+# TOOLBOXLAP — Google Colab + Ollama + ngrok API
 
-Run Hugging Face / Ollama models in a Google Colab GPU runtime with a one-cell launcher.
+One-cell educational/demo launcher for running a Hugging Face / Ollama model on a Google Colab GPU runtime, exposing an OpenAI-compatible API through ngrok, testing it, and copying the resulting Base URL into Cline.
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/toolboxlap-ve/TOOLBOXLAP-Colab-Ollama/blob/main/colab/TOOLBOXLAP-Colab-Ollama.ipynb)
 
 **Website:** https://toolboxlap.com  |  **YouTube:** https://www.youtube.com/@TOOLBOXLAP-u1c  |  **GitHub:** https://github.com/toolboxlap-ve/TOOLBOXLAP-Colab-Ollama
 
-## Notebooks
-
-### Standard managed-Colab notebook
-Use this for Ollama + Hugging Face + a local OpenAI-compatible API inside the managed Colab runtime:
-
-https://colab.research.google.com/github/toolboxlap-ve/TOOLBOXLAP-Colab-Ollama/blob/main/colab/TOOLBOXLAP-Colab-Ollama.ipynb
-
-### Network-capable notebook
-Use this when the notebook kernel is a **local/self-controlled runtime** connected through the Colab interface. In that environment, the launcher can optionally open an ngrok tunnel and print a public OpenAI-compatible Base URL:
-
-https://colab.research.google.com/github/toolboxlap-ve/TOOLBOXLAP-Colab-Ollama/blob/main/colab/TOOLBOXLAP-Colab-Ollama-Network.ipynb
-
-The network notebook automatically detects the runtime. On a Google-managed Colab runtime it keeps the API local and does not start ngrok.
-
-## What this project does
-
-The workflow is:
-
-- start a GPU runtime
-- install/start Ollama
-- pull a Hugging Face / Ollama model
-- expose an OpenAI-compatible endpoint
-- test the endpoint
-- optionally create a public ngrok tunnel when running on a local/self-controlled runtime
-
-## Important Colab limitation
-
-Google's current Colab FAQ says managed runtimes prohibit offering unrelated web services and connecting to remote proxies. This repository does not attempt to bypass those restrictions. The public-tunnel mode is only enabled when the Python kernel is outside Colab's managed runtime.
-
-For a managed Colab session, use the local API mode. For a public API demonstration, use a local/self-controlled runtime through the Colab interface, or use the TOOLBOXLAP Kaggle project where applicable.
-
 ## Quick start
 
-1. Open one of the notebooks above.
-2. In managed Colab, select a GPU runtime.
+1. Open the notebook with the **Open in Colab** button above.
+2. Select a GPU runtime.
 3. Run the single code cell.
-4. Enter a model name or press Enter for the default.
-5. Wait for Ollama to download/start the model.
-6. The notebook prints the local API URL.
-7. In the network-capable notebook, a local/self-controlled runtime can additionally enter an ngrok authtoken and receive a public Base URL.
+4. Enter a model name, or press Enter for the default model.
+5. Enter your ngrok authtoken when prompted. The input is hidden.
+6. Wait for Ollama to download and load the model.
+7. The notebook starts the OpenAI-compatible Flask API and the ngrok tunnel.
+8. Copy the printed Base URL into Cline.
+
+## What it does
+
+The one-cell workflow is:
+
+**Colab GPU → Ollama → Hugging Face model → OpenAI-compatible API → ngrok → Cline / VS Code**
+
+The launcher uses a default public client model ID of `toolboxlap` and automatically tests the public endpoint before printing the final connection details.
 
 ## Default model
 
@@ -53,41 +31,42 @@ For a managed Colab session, use the local API mode. For a public API demonstrat
 hf.co/HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive:Q4_K_M
 ```
 
-Choose a model that fits the available GPU memory and runtime resources.
+You can enter another Hugging Face / Ollama-compatible model, provided it fits the available GPU memory and runtime resources.
 
-## API
+## Cline setup
 
-Local endpoint:
-
-```text
-http://127.0.0.1:5000/v1
-```
-
-Public endpoint (local/self-controlled runtime only):
-
-```text
-https://YOUR-NGROK-URL/v1
-```
-
-Public client settings:
+After the cell finishes, copy the values it prints:
 
 ```text
 Provider: OpenAI Compatible
+Base URL: https://YOUR-NGROK-URL/v1
 Model ID: toolboxlap
 Custom Header: ngrok-skip-browser-warning = true
 ```
 
-## Related resources
+## API testing
 
+The demo uses this API testing site:
+
+https://api-hero.pages.dev/
+
+## Related links
+
+- Google Colab: https://colab.research.google.com/
 - Kaggle: https://www.kaggle.com/
 - ngrok: https://ngrok.com/
-- API test site used in the Kaggle video: https://api-hero.pages.dev/
 - TOOLBOXLAP Kaggle API repo: https://github.com/toolboxlap-ve/TOOLBOXLAP-kaggle-api
 - TOOLBOXLAP website: https://toolboxlap.com/
 
+## Important note about Colab
+
+Google's current FAQ says managed Colab runtimes prohibit offering unrelated web services and connecting to remote proxies. It also says resource availability and limits can change over time.
+
+This repository is provided as an educational demonstration of the workflow and does not promise that every Google-managed Colab session will permit or maintain the public tunnel. A runtime may block, terminate, or otherwise restrict the workflow. Follow Google's current Colab terms and policies when running it.
+
 ## Security
 
-Never commit API keys or ngrok tokens to GitHub. The network notebook requests the ngrok token interactively with hidden input.
+Never commit an ngrok authtoken, API key, or other secret to GitHub. The notebook requests the ngrok token interactively with hidden input, and the token is not stored in this repository.
 
 ## Repository structure
 
